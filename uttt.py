@@ -295,5 +295,6 @@ def game(state="." * 81, depth=20):
 
 if __name__ == "__main__":
 
+    print("here?")
     INITIAL_STATE = "." * 81
     final_state = game(INITIAL_STATE, depth=5)
