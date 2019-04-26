@@ -55,7 +55,16 @@ class Game():
 
 	def updateGame(self, row, col, player, symbol):
 		self.boardSpots[row][col] = player
-		if self.board.checkMinibox() is True:
-			self.board.checkBoard()
+		if self.board.checkMinibox(row, col, player, symbol, self) is True:
+			print("omg i think a minibox has been won")
+			mr, mc = self.board.getCurrentMiniBoard(row, col)
+			self.miniBoards[mr][mc] = player.playerNum
+			if self.board.checkBoard(self.miniBoards) is True:
+				#update the board to look like whoever won
+
+				self.GAME_OVER = True
+			else:
+				print("yall good")
+				#update the box to show the player got it
 		self.board.updateBoard(row, col, symbol)
 
