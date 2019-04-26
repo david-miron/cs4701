@@ -1,3 +1,5 @@
+import random
+
 class Player():
     def __init__(self, symbol, num):
         self.symbol = symbol
@@ -44,21 +46,27 @@ class User(Player):
 
 			if(miniBoardRow < 0 and miniBoardCol < 0):
 				print("You can play on any mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 0 and row <= 8 and col >= 0 and col <= 8):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 0 and row <= 8 and col >= 0 and col <= 8):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
 			elif(miniBoardRow == 0 and miniBoardCol == 0):
 				print("You can play on the top left mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 0 and row <= 2 and col >= 0 and col <= 2):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 0 and row <= 2 and col >= 0 and col <= 2):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
@@ -74,11 +82,14 @@ class User(Player):
 				print()
 			elif(miniBoardRow == 0 and miniBoardCol == 2):
 				print("You can play on the top right mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 0 and row <= 2 and col >= 6 and col <= 8):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 0 and row <= 2 and col >= 6 and col <= 8):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
@@ -94,51 +105,66 @@ class User(Player):
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 1):
 				print("You can play on the middle mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 3 and row <= 5 and col >= 3 and col <= 5):
-					valid = True
-				else:
+				try:	
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 3 and row <= 5 and col >= 3 and col <= 5):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 2):
 				print("You can play on the middle right mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 3 and row <= 5 and col >= 6 and col <= 8):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 3 and row <= 5 and col >= 6 and col <= 8):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 0):
 				print("You can play on the bottm left mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 6 and row <= 8 and col >= 0 and col <= 2):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 6 and row <= 8 and col >= 0 and col <= 2):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 1):
 				print("You can play on the bottom middle mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 6 and row <= 8 and col >= 3 and col <= 5):
-					valid = True
-				else:
+				try:	
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 6 and row <= 8 and col >= 3 and col <= 5):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 2):
 				print("You can play on the bottom right mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 6 and row <= 8 and col >= 6 and col <= 8):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 6 and row <= 8 and col >= 6 and col <= 8):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
@@ -148,10 +174,12 @@ class User(Player):
 				valid = False
 
 			board = game.board
-			mrow, mcol = game.board.getCurrentMiniBoard(row, col)
-			if(game.miniBoards[mrow][mcol] != 0):
-				print("This mini board has already been won")
-				valid = False
+			
+			if(valid):
+				mrow, mcol = game.board.getCurrentMiniBoard(row, col, game)
+				if(game.miniBoards[mrow][mcol] != 0):
+					print("This mini board has already been won")
+					valid = False
 
 		return row,col
 
@@ -160,10 +188,10 @@ class Random(Player):
 	def __init__(self, symbol, num):
 		super(Random, self).__init__(symbol, num)
 
-	def play_turn(self, game, lrow, lcol):
-		(mbr, mbc) = self.getMiniBoard(self, lrow, lcol, game)
-		(playr, playc) = ((3*mbr)+randint(0,2), (3*mbc)+randint(0,2))
+	def playTurn(self, game, lrow, lcol):
+		(mbr, mbc) = self.getMiniBoard(lrow, lcol, game)
+		(playr, playc) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))
 		while game.boardSpots[playr][playc] == 1:
-			(row, col) = ((3*mbr)+randint(0,2), (3*mbc)+randint(0,2))
+			(row, col) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))
 		return (row, col)
 
