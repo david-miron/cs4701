@@ -147,3 +147,17 @@ class Board():
 			return True
 		else:
 			return False
+
+	def getCurrentMiniBoard(self, lrow, lcol, game):
+		if(lrow == -1 and lcol == -1):
+			miniBoardRow = -1
+			miniBoardCol = -1
+		else:
+			miniBoardRow = int(lrow / 3)
+			miniBoardCol = int(lcol / 3)
+
+			if(game.miniBoards[miniBoardRow][miniBoardCol] != 0):
+				miniBoardRow = -1
+				miniBoardCol = -1
+
+		return miniBoardRow, miniBoardCol
