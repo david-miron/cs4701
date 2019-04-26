@@ -49,8 +49,8 @@ class Board():
 			miniBoardRow = -1
 			miniBoardCol = -1
 		else:
-			miniBoardRow = lrow / 3
-			miniBoardCol = lcol / 3
+			miniBoardRow = int(lrow / 3)
+			miniBoardCol = int(lcol / 3)
 
 			if(game.miniBoards[miniBoardRow][miniBoardCol] != 0):
 				miniBoardRow = -1
@@ -58,8 +58,8 @@ class Board():
 
 		return miniBoardRow, miniBoardCol
 
-	def checkMinibox():
+	def checkMinibox(self):
 		return 0
 
-	def checkBoard():
+	def checkBoard(self):
 		return 0

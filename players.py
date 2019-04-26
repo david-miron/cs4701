@@ -146,6 +146,12 @@ class User(Player):
 				print("This spot is already taken")
 				valid = False
 
+			board = game.board
+			mrow, mcol = game.board.getCurrentMiniBoard(row, col)
+			if(game.miniBoards[mrow][mcol] != 0):
+				print("This mini board has already been won")
+				valid = False
+
 		return row,col
 
 
