@@ -21,7 +21,7 @@ class MonteCarlo(Player):
 	def __init__(self, symbol, num):
 		super(MonteCarlo, self).__init__(symbol, num)
 
-	def playTurn(self, game, lrow, lcol)
+	def playTurn(self, game, lrow, lcol):
 		miniBoardRow, miniBoardCol = self.getMiniBoard(lrow, lcol, game)
 
 
