@@ -3,9 +3,6 @@ class Player():
         self.symbol = symbol
         self.playerNum = num
 
-    def playTurn(self, game):
-    	return 0
-
     def getMiniBoard(self, lrow, lcol, game):
     	if(lrow == -1 and lcol == -1):
     		miniBoardRow = -1
@@ -23,6 +20,10 @@ class Player():
 class MonteCarlo(Player):
 	def __init__(self, symbol, num):
 		super(MonteCarlo, self).__init__(symbol, num)
+
+	def playTurn(self, game, lrow, lcol)
+		miniBoardRow, miniBoardCol = self.getMiniBoard(lrow, lcol, game)
+
 
 class Minimax(Player):
 	def __init__(self, symbol, num):
