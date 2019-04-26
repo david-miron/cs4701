@@ -152,3 +152,11 @@ class User(Player):
 class Random(Player):
 	def __init__(self, symbol, num):
 		super(Random, self).__init__(symbol, num)
+
+	def play_turn(self, game, lrow, lcol):
+		(mbr, mbc) = self.getMiniBoard(self, lrow, lcol, game)
+		(playr, playc) = ((3*mbr)+randint(0,2), (3*mbc)+randint(0,2))
+		while game.boardSpots[playr][playc] == 1:
+			(row, col) = ((3*mbr)+randint(0,2), (3*mbc)+randint(0,2))
+		return (row, col)
+
