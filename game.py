@@ -43,10 +43,14 @@ class Game():
 			row, col = self.currentPlayer.playTurn(self, row, col)
 			self.updateGame(row, col, self.currentPlayer.playerNum, self.currentPlayer.symbol)
 
+			print(self.currentPlayer.playerNum)
+
 			if(self.currentPlayer.playerNum == 1):
-				self.currentPlayer == self.player2
+				self.currentPlayer = self.player2
 			else:
-				self.currentPlayer == self.player1
+				self.currentPlayer = self.player1
+
+			print(self.currentPlayer.playerNum)
 
 
 	def updateGame(self, row, col, player, symbol):

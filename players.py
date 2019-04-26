@@ -142,7 +142,11 @@ class User(Player):
 
 				print()
 
-			return row,col
+			if(game.boardSpots[row][col] != 0):
+				print("This spot is already taken")
+				valid = False
+
+		return row,col
 
 
 class Random(Player):

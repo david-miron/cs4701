@@ -27,7 +27,7 @@ def startGame():
 	print()
 
 	while(player2 < 1 or player2 > numOfPlayers):
-		print("Select Player 1 (O):")
+		print("Select Player 2 (O):")
 		print("1 - User")
 		print("2 - Monte Carlo AI")
 		print("3 - Minimax AI")
