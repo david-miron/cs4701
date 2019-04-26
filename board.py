@@ -43,3 +43,23 @@ class Board():
 
 	def updateBoard(self, row, col, symbol):
 		self.spots[row][col] = symbol
+
+	def getCurrentMiniBoard(self, lrow, lcol, game):
+		if(lrow == -1 and lcol == -1):
+			miniBoardRow = -1
+			miniBoardCol = -1
+		else:
+			miniBoardRow = lrow / 3
+			miniBoardCol = lcol / 3
+
+			if(game.miniBoards[miniBoardRow][miniBoardCol] != 0):
+				miniBoardRow = -1
+				miniBoardCol = -1
+
+		return miniBoardRow, miniBoardCol
+
+	def checkMinibox():
+		return 0
+
+	def checkBoard():
+		return 0

@@ -55,5 +55,7 @@ class Game():
 
 	def updateGame(self, row, col, player, symbol):
 		self.boardSpots[row][col] = player
+		if self.board.checkMinibox() is True:
+			self.board.checkBoard()
 		self.board.updateBoard(row, col, symbol)
 
