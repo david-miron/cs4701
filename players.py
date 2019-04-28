@@ -176,7 +176,7 @@ class User(Player):
 			board = game.board
 			
 			if(valid):
-				mrow, mcol = game.board.getCurrentMiniBoard(row, col, game)
+				mrow, mcol = game.board.getCurrentMiniBoard(row, col)
 				if(game.miniBoards[mrow][mcol] != 0):
 					print("This mini board has already been won")
 					valid = False
