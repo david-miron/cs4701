@@ -44,12 +44,14 @@ class Board():
 	def updateBoard(self, row, col, symbol):
 		self.spots[row][col] = symbol
 
+	#returns the coordinates of the minboard at row and col
 	def getCurrentMiniBoard(self, row, col):
 		miniBoardRow = int(row / 3)
 		miniBoardCol = int(col / 3)
 
 		return miniBoardRow, miniBoardCol
 
+	#Returns a 3x3 miniboard for a given section of the board
 	def buildMiniBoard(self, board, trow, brow, lcol, rcol):
 		miniBoard = []
 		rows = board[trow:(brow+1)]
@@ -58,6 +60,7 @@ class Board():
 
 		return miniBoard
 
+	#Returns True if the 3x3 miniboard has been won, false otherwise
 	def checkMiniboxHelper(self, miniBoard, num):
 		col0 = 0
 		col1 = 0
@@ -71,23 +74,20 @@ class Board():
 			diag1 = diag1 + 1 if row[i] == num else diag1
 			diag2 = diag2 + 1 if row[-(i+1)] == num else diag2
 			if row.count(num) == 3:
-				print("here")
 				return True 
 
 		if col0 == 3 or col1 == 3 or col2 == 3 or diag1 == 3 or diag2 == 3:
-			print("not there")
 			return True
 
 		return False
 
+	#Returns true if the current player has won a minibox, false otherwise
 	def checkMinibox(self, row, col, player, symbol, game):
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
 		#print(miniRow, miniCol)
 		if (miniRow == 0) and (miniCol == 0):
 			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
-			print(miniBoard)
 			num = game.currentPlayer.playerNum
-			print(num)
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
@@ -141,9 +141,56 @@ class Board():
 
 		return False
 
-	def checkBoard(self, row, col, player, symbol, game):
+	#Returns True if the current player has won the game, False otherwise
+	def checkBoard(self, miniBoard, game):
 		num = game.currentPlayer.playerNum
 		if self.checkMiniboxHelper(miniBoard, num) is True:
 			return True
 		else:
 			return False
+
+	def wonMiniBoard(self, row, col, symbol):
+		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
+		if (miniRow == 0) and (miniCol == 0):
+			for row in range(3):
+				for col in range(3):
+					self.updateBoard(row, col, symbol)
+		elif (miniRow == 0) and (miniCol == 1):
+			for row in range(3):
+				for col in range(3,6):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 0) and (miniCol == 2):
+			for row in range(3):
+				for col in range(6,9):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 1) and (miniCol == 0):
+			for row in range(3,6):
+				for col in range(3):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 1) and (miniCol == 1):
+			for row in range(3,6):
+				for col in range(3,6):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 1) and (miniCol == 2):
+			for row in range(3,6):
+				for col in range(6,9):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 2) and (miniCol == 0):
+			for row in range(6,9):
+				for col in range(3):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 2) and (miniCol == 1):
+			for row in range(6,9):
+				for col in range(3,6):
+					self.updateBoard(row, col, symbol)
+
+		elif (miniRow == 2) and (miniCol == 2):
+			for row in range(6,9):
+				for col in range(6,9):
+					self.updateBoard(row, col, symbol)
