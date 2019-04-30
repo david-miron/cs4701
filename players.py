@@ -48,6 +48,8 @@ class MonteCarlo(Player):
 
 
 	def playTurn(self, game, lrow, lcol):
+		print()
+		print("Player " + str(game.currentPlayer.playerNum) + ":")
 		#set root node to current game state
 		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):
@@ -103,23 +105,25 @@ class MonteCarlo(Player):
 							newChild = self.MCTree(0, 0, [], leaf, newGame)
 							leaf.children.append(newChild)
 		
-			#simulation
-			random.seed()
+		#simulation
+		random.seed()
+
+		for i in range(100):
 			playoutNode = leaf.children[random.randint(0, len(leaf.children) - 1)]
 			resultGame = copy.deepcopy(playoutNode.game)
 			result = resultGame.dummyPlay()
 
-		#backprop
-		if(playoutNode == None):
-			searchNode = leaf
-		else:
-			searchNode = playoutNode
+			#backprop
+			if(playoutNode == None):
+				searchNode = leaf
+			else:
+				searchNode = playoutNode
 
-		while(searchNode.parent != None):
-			searchNode.gamesPlayed += 1
-			if(result == game.currentPlayer.playerNum):
-				searchNode.wins += 1
-			searchNode = searchNode.parent
+			while(searchNode.parent != None):
+				searchNode.gamesPlayed += 1
+				if(result == game.currentPlayer.playerNum):
+					searchNode.wins += 1
+				searchNode = searchNode.parent
 
 		maxRatio = 0.0
 		maxChild = None
@@ -129,8 +133,6 @@ class MonteCarlo(Player):
 				if ratio >= maxRatio:
 					maxRatio = ratio
 					maxChild = child
-
-		print(maxChild.gamesPlayed)
 
 		return maxChild.game.lrow, maxChild.game.lcol
 
