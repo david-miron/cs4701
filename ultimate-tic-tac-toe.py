@@ -8,6 +8,7 @@ def startGame():
 	numOfPlayers = 4
 	player1 = -1
 	player2 = -1
+	repeat = -1
 
 	while(player1 < 1 or player1 > numOfPlayers):
 		print("Select Player 1 (X):")
@@ -43,6 +44,16 @@ def startGame():
 
 	print()
 
-	game = Game(player1, player2)
+	while(repeat <= 0):
+		try:
+			repeat = int(input("How many times should it repeeat?: "))
+			if(repeat <= 0):
+				print("Not a valid option")
+				print()
+		except:
+			print("Not an integer")
+			print()
+
+	game = Game(player1, player2, repeat)
 
 if __name__ == "__main__": main()

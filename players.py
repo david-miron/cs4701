@@ -121,7 +121,7 @@ class MonteCarlo(Player):
 
 			while(searchNode.parent != None):
 				searchNode.gamesPlayed += 1
-				if(result == game.currentPlayer.playerNum):
+				if(result == self.playerNum):
 					searchNode.wins += 1
 				searchNode = searchNode.parent
 
@@ -326,7 +326,7 @@ class Random(Player):
 
 	def playTurn(self, game, lrow, lcol):
 		print()
-		print("Player " + str(self.playerNum) + " (Random) :")
+		print("Player " + str(self.playerNum) + " (Random):")
 		mrow, mcol = game.board.getNextMiniBoard(lrow, lcol, game)
 		valid = False
 
