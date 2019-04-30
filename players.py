@@ -1,16 +1,93 @@
 import random
+import copy
+import game
 
 class Player():
     def __init__(self, symbol, num):
         self.symbol = symbol
         self.playerNum = num
 
+class Dummy(Player):
+	def __init__(self):
+			name = "big dumb"
+
+	def playTurn(self, game, lrow, lcol):
+		print("hey dummy")
+
 class MonteCarlo(Player):
 	def __init__(self, symbol, num):
 		super(MonteCarlo, self).__init__(symbol, num)
+		testGame = game.Game(0,0)
+		self.mcTree = self.MCTree(0, 0, [], None, testGame)
+
 
 	def playTurn(self, game, lrow, lcol):
-		miniBoardRow, miniBoardCol = game.board.getNextMiniBoard(lrow, lcol, game)
+		#set root node to current game state
+		nextChild = self.findChild(game, game.boardSpots)
+		if(nextChild == None):
+			child = self.MCTree(0, 0, [], self.mcTree, game)
+			self.mcTree.children.append(child)
+			self.mcTree = child
+		else:
+			self.mcTree = nextChild
+
+		#selection step
+		leaf = self.mcTree
+		random.seed()
+		while(len(leaf.children) > 0):
+			leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
+
+		#expansion step
+		if(self.terminal(leaf.game) == 0):
+			nextMBRow, nextMBCol = leaf.game.board.getNextMiniBoard(leaf.game.lrow, leaf.game.lcol, leaf.game)
+
+			if(nextMBRow == -1 and nextMBCol == -1):
+				print("play anywhere")
+			else:
+				for trow in range(3):
+					for tcol in range(3):
+						row = 3 * nextMBRow + trow
+						col = 3 * nextMBCol + tcol
+						mrow, mcol = leaf.game.board.getCurrentMiniBoard(row, col)
+
+						if(leaf.game.boardSpots[row][col] == 0 and leaf.game.miniBoards()[mrow][mcol] == 0):
+							newGame = copy.deepcopy(leaf.game)
+							newGame.updateGame(row, col, newGame.currentPlayer.playerNum, newGame.currentPlayer.symbol)
+							newChild = self.MCTree(0, 0, [], leaf, newGame)
+							leaf.children.append(newChild)
+		
+		#simulation
+
+		#backprop
+		return -10, -10
+
+	#return number of player that has won if there is a winner, 0 if on going, -1 if tie
+	def terminal(self, game):
+		if(game.board.checkBoard(game.miniBoards, 1)):
+			return 1
+		elif(game.board.checkBoard(game.miniBoards, 2)):
+			return 2
+		elif(game.board.checkTie(game.miniBoards)):
+			return -1
+		
+		return 0
+
+
+
+	#find child of current tree with matching board and return, None if it doesn't exist
+	def findChild(self, game, board):
+		for child in self.mcTree.children:
+			if(child.game.boardState == board):
+				return child
+		return None
+
+	class MCTree():
+		def __init__(self, w, gp, ch, par, g):
+			self.wins = w
+			self.gamesPlayed = gp
+			self.children = ch
+			self.parent = par
+			self.game = g
 
 
 class Minimax(Player):

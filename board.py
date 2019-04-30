@@ -157,18 +157,17 @@ class Board():
 		return False
 
 	#Returns True if the current player has won the game, False otherwise
-	def checkBoard(self, miniBoard, game):
-		num = game.currentPlayer.playerNum
-		if self.checkMiniboxHelper(miniBoard, num) is True:
+	def checkBoard(self, miniBoards, num):
+		if self.checkMiniboxHelper(miniBoards, num) is True:
 			return True
 		else:
 			return False
 
 	#return True if the board is full (meaning it is tied), and False otherwise
-	def checkTie(self, game):
+	def checkTie(self, miniBoards):
 		for row in range(3):
 			for col in range(3):
-				if game.miniBoards[row][col] == 0:
+				if miniBoards[row][col] == 0:
 					return False
 
 		return True
