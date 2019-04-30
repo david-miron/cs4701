@@ -49,7 +49,7 @@ class MonteCarlo(Player):
 
 	def playTurn(self, game, lrow, lcol):
 		print()
-		print("Player " + str(game.currentPlayer.playerNum) + ":")
+		print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo):")
 		#set root node to current game state
 		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):
@@ -83,8 +83,8 @@ class MonteCarlo(Player):
 
 			if(nextMBRow == -1 and nextMBCol == -1):
 				#play anywhere
-				for row in range(8):
-					for col in range(8):
+				for row in range(9):
+					for col in range(9):
 						mrow, mcol = leaf.game.board.getCurrentMiniBoard(row, col)
 
 						if(leaf.game.boardSpots[row][col] == 0 and leaf.game.miniBoards[mrow][mcol] == 0):
@@ -325,9 +325,23 @@ class Random(Player):
 		super(Random, self).__init__(symbol, num)
 
 	def playTurn(self, game, lrow, lcol):
-		(mbr, mbc) = self.getNextMiniBoard(lrow, lcol, game)
-		(playr, playc) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))
-		while game.boardSpots[playr][playc] == 1:
-			(row, col) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))
-		return (row, col)
+		print()
+		print("Player " + str(self.playerNum) + " (Random) :")
+		mrow, mcol = game.board.getNextMiniBoard(lrow, lcol, game)
+		valid = False
+
+		random.seed()
+		while(not valid):
+			if(mrow == -1 and mcol == -1):
+				row = random.randint(0,8)
+				col = random.randint(0,8)
+			else:
+				row = 3*mrow + random.randint(0,2)
+				col = 3*mcol + random.randint(0,2)
+
+			miniRow, miniCol = game.board.getCurrentMiniBoard(row, col)
+			if(game.boardSpots[row][col] == 0 and game.miniBoards[miniRow][miniCol] == 0):
+				valid = True
+		
+		return row, col
 
