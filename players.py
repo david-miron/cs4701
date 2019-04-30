@@ -5,26 +5,12 @@ class Player():
         self.symbol = symbol
         self.playerNum = num
 
-    def getMiniBoard(self, lrow, lcol, game):
-    	if(lrow == -1 and lcol == -1):
-    		miniBoardRow = -1
-    		miniBoardCol = -1
-    	else:
-    		miniBoardRow = lrow % 3
-    		miniBoardCol = lcol % 3
-
-    		if(game.miniBoards[miniBoardRow][miniBoardCol] != 0):
-    			miniBoardRow = -1
-    			miniBoardCol = -1
-
-    	return miniBoardRow, miniBoardCol
-
 class MonteCarlo(Player):
 	def __init__(self, symbol, num):
 		super(MonteCarlo, self).__init__(symbol, num)
 
 	def playTurn(self, game, lrow, lcol):
-		miniBoardRow, miniBoardCol = self.getMiniBoard(lrow, lcol, game)
+		miniBoardRow, miniBoardCol = game.board.getNextMiniBoard(lrow, lcol, game)
 
 
 class Minimax(Player):
@@ -42,7 +28,7 @@ class User(Player):
 		col = -1
 
 		while(not valid):
-			miniBoardRow, miniBoardCol = self.getMiniBoard(lrow, lcol, game)
+			miniBoardRow, miniBoardCol = game.board.getNextMiniBoard(lrow, lcol, game)
 
 			if(miniBoardRow < 0 and miniBoardCol < 0):
 				print("You can play on any mini board")
@@ -178,7 +164,7 @@ class User(Player):
 			if(valid):
 				mrow, mcol = game.board.getCurrentMiniBoard(row, col)
 				if(game.miniBoards[mrow][mcol] != 0):
-					print("This mini board has already been won")
+					print("This mini board is out of cOmIsSiOn ya big ol' dummy")
 					valid = False
 
 		return row,col
@@ -189,7 +175,7 @@ class Random(Player):
 		super(Random, self).__init__(symbol, num)
 
 	def playTurn(self, game, lrow, lcol):
-		(mbr, mbc) = self.getMiniBoard(lrow, lcol, game)
+		(mbr, mbc) = self.getNextMiniBoard(lrow, lcol, game)
 		(playr, playc) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))
 		while game.boardSpots[playr][playc] == 1:
 			(row, col) = ((3*mbr)+random.randint(0,2), (3*mbc)+random.randint(0,2))

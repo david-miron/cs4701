@@ -28,7 +28,7 @@ class Game():
 
 		self.currentPlayer = self.player1
 
-		#0 -> not claimed, 1 -> claimed by player 1, 2 -> claimed by player 2
+		#-1 -> tied and full mini-board, 0 -> not claimed, 1 -> claimed by player 1, 2 -> claimed by player 2
 		self.boardSpots = [[0 for i in range(9)] for j in range(9)]
 		self.miniBoards = [[0 for i in range(3)] for j in range(3)]
 
@@ -58,14 +58,19 @@ class Game():
 		if self.board.checkMinibox(row, col, player, symbol, self) is True:
 			print("omg i think a minibox has been won")
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
-			self.miniBoards[mr][mc] = self.currentPlayer.playerNum
-			if self.board.checkBoard(self.miniBoards, self) is True:
-				#update the board to look like whoever won
+			self.miniBoards[mr][mc] = player
 
+			if self.board.checkBoard(self.miniBoards, self) is True:
+				self.board.finishBoard(symbol)
 				self.GAME_OVER = True
 			else:
-				print("yall good")
-				self.board.wonMiniBoard(row, col, symbol)
-				#update the box to show the player got it
-		self.board.updateBoard(row, col, symbol)
+				self.board.finishMiniBoard(row, col, symbol)
+
+		elif self.board.checkBoardFull(row, col, self):
+			print("YOU TIED .. IDIOT")
+			mr, mc = self.board.getCurrentMiniBoard(row, col)
+			self.miniBoards[mr][mc] = -1
+			self.board.finishMiniBoard(row, col, ' + ')
+		else:
+			self.board.updateBoard(row, col, symbol)
 
