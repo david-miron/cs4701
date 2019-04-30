@@ -149,6 +149,66 @@ class Board():
 		else:
 			return False
 
+
+	
+	#Given col and row in the minibox of question, returns True if that minibox is full, False otherwise
+	def checkBoardFull(self, row, col, game):
+		def checkBoardFullHelper(miniboard):
+			for row in miniboard:
+				if 0 in row:
+					return True
+
+			return False
+
+		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
+		#print(miniRow, miniCol)
+		if (miniRow == 0) and (miniCol == 0):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 0) and (miniCol == 1):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 3, 5)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 0) and (miniCol == 2):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 6, 8)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 1) and (miniCol == 0):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 0, 2)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 1) and (miniCol == 1):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 3, 5)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 1) and (miniCol == 2):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 6, 8)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 2) and (miniCol == 0):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 6, 9, 0, 2)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 2) and (miniCol == 1):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 3, 5)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		elif (miniRow == 2) and (miniCol == 2):
+			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 6, 8)
+			if self.checkBoardFullHelper(miniBoard) is True:
+				return True
+
+		return False
+
 	def wonMiniBoard(self, row, col, symbol):
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
 		if (miniRow == 0) and (miniCol == 0):
