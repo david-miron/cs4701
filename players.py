@@ -31,7 +31,7 @@ class User(Player):
 			miniBoardRow, miniBoardCol = game.board.getNextMiniBoard(lrow, lcol, game)
 
 			if(miniBoardRow < 0 and miniBoardCol < 0):
-				print("You can play on any mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on any mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -44,7 +44,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 0 and miniBoardCol == 0):
-				print("You can play on the top left mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the top left mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -57,7 +57,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 0 and miniBoardCol == 1):
-				print("You can play on the top middle mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the top middle mini board")
 				row = int(input("Enter row: "))
 				col = int(input("Enter col: "))
 				if(row >= 0 and row <= 2 and col >= 3 and col <= 5):
@@ -67,7 +67,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 0 and miniBoardCol == 2):
-				print("You can play on the top right mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the top right mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -80,7 +80,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 0):
-				print("You can play on the middle left mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the middle left mini board")
 				row = int(input("Enter row: "))
 				col = int(input("Enter col: "))
 				if(row >= 3 and row <= 5 and col >= 0 and col <= 2):
@@ -90,7 +90,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 1):
-				print("You can play on the middle mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the middle mini board")
 				try:	
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -103,7 +103,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 2):
-				print("You can play on the middle right mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the middle right mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -116,7 +116,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 0):
-				print("You can play on the bottm left mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the bottm left mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -129,7 +129,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 1):
-				print("You can play on the bottom middle mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the bottom middle mini board")
 				try:	
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -142,7 +142,7 @@ class User(Player):
 
 				print()
 			elif(miniBoardRow == 2 and miniBoardCol == 2):
-				print("You can play on the bottom right mini board")
+				print("Player " + str(game.currentPlayer.playerNum) + " can play on the bottom right mini board")
 				try:
 					row = int(input("Enter row: "))
 					col = int(input("Enter col: "))
@@ -154,14 +154,12 @@ class User(Player):
 					print("This is not a valid move")
 
 				print()
-
-			if(game.boardSpots[row][col] != 0):
-				print("This spot is already taken")
-				valid = False
-
-			board = game.board
 			
 			if(valid):
+				if(game.boardSpots[row][col] != 0):
+					print("This spot is already taken")
+					valid = False
+
 				mrow, mcol = game.board.getCurrentMiniBoard(row, col)
 				if(game.miniBoards[mrow][mcol] != 0):
 					print("This mini board is out of cOmIsSiOn ya big ol' dummy")

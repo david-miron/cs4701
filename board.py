@@ -164,6 +164,14 @@ class Board():
 		else:
 			return False
 
+	#return True if the board is full (meaning it is tied), and False otherwise
+	def checkTie(self, game):
+		for row in range(3):
+			for col in range(3):
+				if game.miniBoards[row][col] == 0:
+					return False
+
+		return True
 
 	
 	#Given col and row in the minibox of question, returns True if that minibox is full, False otherwise
@@ -271,7 +279,10 @@ class Board():
 				for col in range(6,9):
 					self.updateBoard(row, col, symbol)
 
+	#fill full board with appropriate symbol when it has been won or tied
 	def finishBoard(self, symbol):
 		for row in range(9):
 			for col in range(9):
 				self.updateBoard(row, col, symbol)
+
+

@@ -43,34 +43,50 @@ class Game():
 			row, col = self.currentPlayer.playTurn(self, row, col)
 			self.updateGame(row, col, self.currentPlayer.playerNum, self.currentPlayer.symbol)
 
-			print(self.currentPlayer.playerNum)
-
 			if(self.currentPlayer.playerNum == 1):
 				self.currentPlayer = self.player2
 			else:
 				self.currentPlayer = self.player1
 
-			print(self.currentPlayer.playerNum)
-
 
 	def updateGame(self, row, col, player, symbol):
 		self.boardSpots[row][col] = player
 		if self.board.checkMinibox(row, col, player, symbol, self) is True:
-			print("omg i think a minibox has been won")
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
 			self.miniBoards[mr][mc] = player
 
 			if self.board.checkBoard(self.miniBoards, self) is True:
 				self.board.finishBoard(symbol)
+				
+				self.board.printBoard()
+				print()
+				print("PLAYER " + str(player) + " WON!")
+
 				self.GAME_OVER = True
 			else:
 				self.board.finishMiniBoard(row, col, symbol)
 
+				if self.board.checkTie(self):
+					self.board.finishBoard(' + ')
+					self.board.printBoard()
+					print()
+					print("YOU TIED!")
+
+					self.GAME_OVER = True
+
 		elif self.board.checkBoardFull(row, col, self):
-			print("YOU TIED .. IDIOT")
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
 			self.miniBoards[mr][mc] = -1
 			self.board.finishMiniBoard(row, col, ' + ')
+
+			if self.board.checkTie(self):
+					self.board.finishBoard(' + ')
+					self.board.printBoard()
+					print()
+					print("YOU TIED!")
+
+					self.GAME_OVER = True
+
 		else:
 			self.board.updateBoard(row, col, symbol)
 
