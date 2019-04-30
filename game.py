@@ -19,7 +19,7 @@ class Game():
 		elif(player1 == 4):
 			self.player1 = Random(" X ", 1)
 		elif(player1 == 0):
-			self.player1 = Dummy()
+			self.player1 = Dummy(' X ', 1)
 
 		if(player2 == 1):
 			self.player2 = User(" O ", 2)
@@ -30,7 +30,7 @@ class Game():
 		elif(player2 == 4):
 			self.player2 = Random(" O ", 2)
 		elif(player2 == 0):
-			self.player2 = Dummy()
+			self.player2 = Dummy(' O ', 2)
 
 
 		self.currentPlayer = self.player1
@@ -50,7 +50,7 @@ class Game():
 		while(not self.GAME_OVER):
 			self.board.printBoard()
 			row, col = self.currentPlayer.playTurn(self, row, col)
-			lrow, lcol = row, col
+			self.lrow, self.lcol = row, col
 			self.updateGame(row, col, self.currentPlayer.playerNum, self.currentPlayer.symbol)
 
 			if(self.currentPlayer.playerNum == 1):
@@ -60,8 +60,29 @@ class Game():
 				self.currentPlayer = self.player1
 				self.nextPlayer = self.player2
 
+	#play out a test game for Monte Carlo
+	def dummyPlay(self):
+		while(not self.GAME_OVER):
+			row, col = self.currentPlayer.playTurn(self, self.lrow, self.lcol)
+			self.updateGame(row, col, self.currentPlayer.playerNum, self.currentPlayer.symbol)
+
+			if(self.currentPlayer.playerNum == 1):
+				self.currentPlayer = self.player2
+				self.nextPlayer = self.player1
+			else:
+				self.currentPlayer = self.player1
+				self.nextPlayer = self.player2
+
+		if(self.board.checkBoard(self.miniBoards, 1)):
+			return 1
+		elif(self.board.checkBoard(self.miniBoards, 2)):
+			return 2
+		elif(self.board.checkTie(self.miniBoards)):
+			return -1
+
 
 	def updateGame(self, row, col, player, symbol):
+		self.lrow, self.lcol = row, col
 		self.boardSpots[row][col] = player
 		if self.board.checkMinibox(row, col, player, symbol, self) is True:
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
@@ -70,19 +91,21 @@ class Game():
 			if self.board.checkBoard(self.miniBoards, self.currentPlayer.playerNum) is True:
 				self.board.finishBoard(symbol)
 				
-				self.board.printBoard()
-				print()
-				print("PLAYER " + str(player) + " WON!")
+				if(not isinstance(self.currentPlayer, Dummy)):
+					self.board.printBoard()
+					print()
+					print("PLAYER " + str(player) + " WON!")
 
 				self.GAME_OVER = True
 			else:
 				self.board.finishMiniBoard(row, col, symbol)
 
 				if self.board.checkTie(self.miniBoards):
-					self.board.finishBoard(' + ')
-					self.board.printBoard()
-					print()
-					print("YOU TIED!")
+					if(not isinstance(self.currentPlayer, Dummy)):
+						self.board.finishBoard(' + ')
+						self.board.printBoard()
+						print()
+						print("YOU TIED!")
 
 					self.GAME_OVER = True
 
@@ -92,12 +115,13 @@ class Game():
 			self.board.finishMiniBoard(row, col, ' + ')
 
 			if self.board.checkTie(self.miniBoards):
+				if(not isinstance(self.currentPlayer, Dummy)):
 					self.board.finishBoard(' + ')
 					self.board.printBoard()
 					print()
 					print("YOU TIED!")
 
-					self.GAME_OVER = True
+				self.GAME_OVER = True
 
 		else:
 			self.board.updateBoard(row, col, symbol)

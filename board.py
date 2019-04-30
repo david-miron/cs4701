@@ -99,7 +99,6 @@ class Board():
 	#Returns true if the current player has won a minibox, false otherwise
 	def checkMinibox(self, row, col, player, symbol, game):
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
-		#print(miniRow, miniCol)
 		if (miniRow == 0) and (miniCol == 0):
 			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
 			num = game.currentPlayer.playerNum
@@ -183,7 +182,6 @@ class Board():
 			return True
 
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
-		#print(miniRow, miniCol)
 		if (miniRow == 0) and (miniCol == 0):
 			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
 			if checkBoardFullHelper(miniBoard) is True:

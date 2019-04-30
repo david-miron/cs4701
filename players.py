@@ -8,11 +8,37 @@ class Player():
         self.playerNum = num
 
 class Dummy(Player):
-	def __init__(self):
+	def __init__(self, symbol, num):
+			super(Dummy, self).__init__(symbol, num)
 			name = "big dumb"
 
 	def playTurn(self, game, lrow, lcol):
-		print("hey dummy")
+		mrow, mcol = game.board.getNextMiniBoard(lrow, lcol, game)
+		valid = False
+		row = -1
+		col = -1
+		random.seed()
+
+		if(mrow == -1 and mcol == -1):
+			while(not valid):
+				row = random.randint(0,8)
+				col = random.randint(0,8)
+
+				miniRow, miniCol = game.board.getCurrentMiniBoard(row, col)
+
+				if(game.boardSpots[row][col] == 0 and game.miniBoards[miniRow][miniCol] == 0):
+					valid = True
+		else:
+			while(not valid):
+				trow = random.randint(0,2)
+				tcol = random.randint(0,2)
+				row = 3*(mrow) + trow
+				col = 3*(mcol) + tcol
+
+				if(game.boardSpots[row][col] == 0):
+					valid = True
+
+		return row, col
 
 class MonteCarlo(Player):
 	def __init__(self, symbol, num):
@@ -23,9 +49,20 @@ class MonteCarlo(Player):
 
 	def playTurn(self, game, lrow, lcol):
 		#set root node to current game state
-		nextChild = self.findChild(game, game.boardSpots)
+		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):
-			child = self.MCTree(0, 0, [], self.mcTree, game)
+			dummyGame = copy.deepcopy(game)
+			dummyGame.player1 = Dummy(' X ', 1)
+			dummyGame.player2 = Dummy(' O ', 2)
+
+			if(game.currentPlayer.playerNum == 1):
+				dummyGame.currentPlayer = dummyGame.player1
+				dummyGame.nextPlayer = dummyGame.player2
+			else:
+				dummyGame.currentPlayer = dummyGame.player2
+				dummyGame.nextPlayer = dummyGame.player1
+
+			child = self.MCTree(0, 0, [], self.mcTree, dummyGame)
 			self.mcTree.children.append(child)
 			self.mcTree = child
 		else:
@@ -36,13 +73,23 @@ class MonteCarlo(Player):
 		random.seed()
 		while(len(leaf.children) > 0):
 			leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
-
+		
 		#expansion step
+		playoutNode = None
 		if(self.terminal(leaf.game) == 0):
 			nextMBRow, nextMBCol = leaf.game.board.getNextMiniBoard(leaf.game.lrow, leaf.game.lcol, leaf.game)
 
 			if(nextMBRow == -1 and nextMBCol == -1):
-				print("play anywhere")
+				#play anywhere
+				for row in range(8):
+					for col in range(8):
+						mrow, mcol = leaf.game.board.getCurrentMiniBoard(row, col)
+
+						if(leaf.game.boardSpots[row][col] == 0 and leaf.game.miniBoards[mrow][mcol] == 0):
+							newGame = copy.deepcopy(leaf.game)
+							newGame.updateGame(row, col, newGame.currentPlayer.playerNum, newGame.currentPlayer.symbol)
+							newChild = self.MCTree(0, 0, [], leaf, newGame)
+							leaf.children.append(newChild)
 			else:
 				for trow in range(3):
 					for tcol in range(3):
@@ -50,16 +97,42 @@ class MonteCarlo(Player):
 						col = 3 * nextMBCol + tcol
 						mrow, mcol = leaf.game.board.getCurrentMiniBoard(row, col)
 
-						if(leaf.game.boardSpots[row][col] == 0 and leaf.game.miniBoards()[mrow][mcol] == 0):
+						if(leaf.game.boardSpots[row][col] == 0 and leaf.game.miniBoards[mrow][mcol] == 0):
 							newGame = copy.deepcopy(leaf.game)
 							newGame.updateGame(row, col, newGame.currentPlayer.playerNum, newGame.currentPlayer.symbol)
 							newChild = self.MCTree(0, 0, [], leaf, newGame)
 							leaf.children.append(newChild)
 		
-		#simulation
+			#simulation
+			random.seed()
+			playoutNode = leaf.children[random.randint(0, len(leaf.children) - 1)]
+			resultGame = copy.deepcopy(playoutNode.game)
+			result = resultGame.dummyPlay()
 
 		#backprop
-		return -10, -10
+		if(playoutNode == None):
+			searchNode = leaf
+		else:
+			searchNode = playoutNode
+
+		while(searchNode.parent != None):
+			searchNode.gamesPlayed += 1
+			if(result == game.currentPlayer.playerNum):
+				searchNode.wins += 1
+			searchNode = searchNode.parent
+
+		maxRatio = 0.0
+		maxChild = None
+		for child in self.mcTree.children:
+			if(child.gamesPlayed != 0):
+				ratio = child.wins / child.gamesPlayed
+				if ratio >= maxRatio:
+					maxRatio = ratio
+					maxChild = child
+
+		print(maxChild.gamesPlayed)
+
+		return maxChild.game.lrow, maxChild.game.lcol
 
 	#return number of player that has won if there is a winner, 0 if on going, -1 if tie
 	def terminal(self, game):
@@ -75,9 +148,9 @@ class MonteCarlo(Player):
 
 
 	#find child of current tree with matching board and return, None if it doesn't exist
-	def findChild(self, game, board):
+	def findChild(self, board):
 		for child in self.mcTree.children:
-			if(child.game.boardState == board):
+			if(child.game.boardSpots == board):
 				return child
 		return None
 
