@@ -77,6 +77,7 @@ class MonteCarlo(Player):
 			leaf = self.mcTree
 			random.seed()
 			while(len(leaf.children) > 0):
+				# leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
 				ubc_lst = []
 				for idx, ch in enumerate(leaf.children):
 					if ch.gamesPlayed == 0:
