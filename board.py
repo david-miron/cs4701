@@ -97,59 +97,59 @@ class Board():
 		return False
 
 	#Returns true if the current player has won a minibox, false otherwise
-	def checkMinibox(self, row, col, player, symbol, game):
+	def checkMinibox(self, row, col, player, board):
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
 		if (miniRow == 0) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 0, 2, 0, 2)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 0) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 3, 5)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 0, 2, 3, 5)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 0) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 6, 8)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 0, 2, 6, 8)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 0, 2)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 3, 5, 0, 2)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 3, 5)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 3, 5, 3, 5)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 6, 8)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 3, 5, 6, 8)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6, 9, 0, 2)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 6, 9, 0, 2)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 3, 5)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 6,  9, 3, 5)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 6, 8)
-			num = game.currentPlayer.playerNum
+			miniBoard = self.buildMiniBoard(board, 6,  9, 6, 8)
+			num = player
 			if self.checkMiniboxHelper(miniBoard, num) is True:
 				return True
 
@@ -173,7 +173,7 @@ class Board():
 
 	
 	#Given col and row in the minibox of question, returns True if that minibox is full, False otherwise
-	def checkBoardFull(self, row, col, game):
+	def checkBoardFull(self, row, col, board):
 		def checkBoardFullHelper(miniboard):
 			for row in miniboard:
 				if 0 in row:
@@ -183,47 +183,47 @@ class Board():
 
 		miniRow, miniCol = self.getCurrentMiniBoard(row, col)
 		if (miniRow == 0) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 0, 2)
+			miniBoard = self.buildMiniBoard(board, 0, 2, 0, 2)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 0) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 3, 5)
+			miniBoard = self.buildMiniBoard(board, 0, 2, 3, 5)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 0) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 0, 2, 6, 8)
+			miniBoard = self.buildMiniBoard(board, 0, 2, 6, 8)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 0, 2)
+			miniBoard = self.buildMiniBoard(board, 3, 5, 0, 2)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 3, 5)
+			miniBoard = self.buildMiniBoard(board, 3, 5, 3, 5)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 1) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 3, 5, 6, 8)
+			miniBoard = self.buildMiniBoard(board, 3, 5, 6, 8)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 0):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6, 9, 0, 2)
+			miniBoard = self.buildMiniBoard(board, 6, 9, 0, 2)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 1):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 3, 5)
+			miniBoard = self.buildMiniBoard(board, 6,  9, 3, 5)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
 		elif (miniRow == 2) and (miniCol == 2):
-			miniBoard = self.buildMiniBoard(game.boardSpots, 6,  9, 6, 8)
+			miniBoard = self.buildMiniBoard(board, 6,  9, 6, 8)
 			if checkBoardFullHelper(miniBoard) is True:
 				return True
 
@@ -281,5 +281,12 @@ class Board():
 		for row in range(9):
 			for col in range(9):
 				self.updateBoard(row, col, symbol)
+
+	def miniCoordToGlobal(self, mrow, mcol):
+		coords = []
+		for row in range(3):
+			for col in range(3):
+				coords.append((row+(mrow*3),col+(mcol*3)))
+		return coords
 
 

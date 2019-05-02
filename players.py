@@ -1,6 +1,8 @@
 import random
 import copy
 import game
+from collections import Counter
+from math import inf
 
 class Player():
     def __init__(self, symbol, num):
@@ -168,6 +170,208 @@ class MonteCarlo(Player):
 class Minimax(Player):
 	def __init__(self, symbol, num):
 		super(Minimax, self).__init__(symbol, num)
+
+	def evaluate_small_box(self, miniBoard, player):
+		opponent = self.opponent(player)
+
+		score = 0
+
+		goal_states=[]
+		col0 = [miniBoard[0][0],miniBoard[1][0],miniBoard[2][0]]
+		goal_states.append(col0)
+		col1 = [miniBoard[0][1],miniBoard[1][1],miniBoard[2][1]]
+		goal_states.append(col1)
+		col2 = [miniBoard[0][2],miniBoard[1][2],miniBoard[2][2]]
+		goal_states.append(col2)
+		diag1 = [miniBoard[0][0],miniBoard[1][1],miniBoard[2][2]]
+		goal_states.append(diag1)
+		diag2 = [miniBoard[0][2],miniBoard[1][1],miniBoard[2][0]]
+		goal_states.append(diag2)
+		row0 = miniBoard[0]
+		goal_states.append(row0)
+		row1 = miniBoard[1]
+		goal_states.append(row1)
+		row2 = miniBoard[2]
+		goal_states.append(row2)
+
+		for state in goal_states:
+			
+			if state.count(player) == 3:
+				score += 100
+			elif state.count(player) == 2 and state.count(0) == 1:
+				score += 10
+			elif state.count(player) == 1 and state.count(0) == 2:
+				score += 1
+			elif state.count(opponent) == 3:
+				score -= 100
+				return score
+			elif state.count(opponent) == 2 and state.count(0) == 1:
+				score -= 10
+			elif state.count(opponent) == 1 and state.count(0) == 2:
+				score -= 1
+
+		return score
+
+	def opponent(self, player):
+		if player == 1:
+			return 2
+		else:
+			return 1
+
+	def evaluate(self, game, board, player):
+		score = 0
+		for row in range(3):
+			for col in range(3):
+				x,y = game.board.getCurrentMiniBoard(row, col)
+				coords = game.board.miniCoordToGlobal(x, y)
+				temp = []
+				for x,y in coords:
+					temp.append(board[x][y])
+				miniBoard = []
+				miniBoard.append(temp[:3])
+				miniBoard.append(temp[3:6])
+				miniBoard.append(temp[6:9])
+				score += self.evaluate_small_box(miniBoard, player)
+		return score
+
+	def playTurn(self, game, lrow, lcol, depth=20):
+		print()
+		print("Player " + str(game.currentPlayer.playerNum) + " (MiniMax):")
+
+		dummyGame = copy.deepcopy(game)
+		dummyGame.player1 = Dummy(' X ', 1)
+		dummyGame.player2 = Dummy(' O ', 2)
+		if game.currentPlayer.playerNum == 1:
+			dummyGame.currentPlayer = dummyGame.player1
+			dummyGame.nextPlayer = dummyGame.player2
+		else:
+			dummyGame.currentPlayer = dummyGame.player2
+			dummyGame.nextPlayer = dummyGame.player1
+
+		player = dummyGame.currentPlayer.playerNum
+
+		val, move = self.miniMax(dummyGame, lrow, lcol, depth, dummyGame.currentPlayer.playerNum)
+		return move[0], move[1]
+		# succ = self.successors(dummyGame.boardSpots, dummyGame, lrow, lcol, player)
+
+		# best_move = (-inf, None)
+
+		# for coord, board in succ.items():
+		# 	dummyGame.updateGame(coord[0], coord[1], player, dummyGame.currentPlayer.symbol)
+		# 	val = self.min_turn(dummyGame, board, coord, self.opponent(player), depth-1, -inf, inf)
+		# 	if val > best_move[0]:
+		# 		best_move = (val, coord)
+		# nope = 0
+		# if best_move[1] is None:
+		# 	nope += 1
+		# 	x = list(succ.keys())[0][0]
+		# 	y = list(succ.keys())[0][1]
+		# 	coord = (x,y)
+		# 	best_move = (-inf, coord)
+		# print(nope)
+		# return best_move[1][0], best_move[1][1]
+
+	def miniMax(self, game, lrow, lcol, depth, maxPlayer):
+		#print('top minimax')
+		#print(self.evaluate(game, game.boardSpots, game.nextPlayer.playerNum))
+		
+		player = game.currentPlayer.playerNum
+		succ = self.successors(game.boardSpots, game, lrow, lcol, player)
+		#stopping conditions, evaluate the state
+		if depth <= 0 or len(succ) == 0 or game.board.checkBoard(game.miniBoards, self.opponent(player)) or game.board.checkBoard(game.miniBoards, player):
+			return self.evaluate(game, game.boardSpots, game.nextPlayer.playerNum)
+		
+		depth -1
+
+		if maxPlayer == game.currentPlayer.playerNum:
+			val = -inf
+			move = None
+			for coord in succ:
+				#update game
+				game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+				#update next player
+				hold = game.currentPlayer
+				game.currentPlayer = game.nextPlayer
+				game.nextPlayer = hold
+				#maximize
+				temp, move = self.miniMax(game, coord[0], coord[1], depth, maxPlayer)
+				if temp > val:
+					val = temp
+					move = coord
+			return val, move
+		else:
+			val = inf
+			move = None
+			for coord in succ:
+				#update game
+				game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+				#update next player
+				hold = game.currentPlayer
+				game.currentPlayer = game.nextPlayer
+				game.nextPlayer = hold
+				#minimize
+				temp, move = self.miniMax(game, coord[0], coord[1], depth, maxPlayer)
+				if temp < val:
+					val = temp
+					move = coord
+			return val, move
+
+	def successors(self, board, game, lrow, lcol, player):
+		succ = []
+		mr, mc = game.board.getNextMiniBoard(lrow, lcol, game)
+		if mr == -1 or game.board.checkBoardFull(mr, mc, board) is True:
+			for x, row in enumerate(board):
+				for y, val in enumerate(row):
+					temp = copy.deepcopy(game.boardSpots)
+					if val == 0:
+						temp[x][y] = player
+						succ.append((x,y))
+						# succ[(x,y)] = temp
+		else:
+			coords = game.board.miniCoordToGlobal(mr, mc)
+			for (x,y) in coords:
+				temp = copy.deepcopy(game.boardSpots)
+				if temp[x][y] == 0:
+					temp[x][y] = player
+					succ.append((x,y))
+					# succ[(x,y)] = temp
+		return succ
+
+	def min_turn(self, game, board, last_move, player, depth, alpha, beta):
+		if depth <= 0 or game.board.checkBoard(game.miniBoards, self.opponent(player)) or game.board.checkBoard(game.miniBoards, player):
+		# if depth <= 0:
+			return self.evaluate(game, board, last_move, player)
+
+		succ = self.successors(board, game, last_move[0], last_move[1], player)
+		temp = inf
+		for coord, board in succ.items():
+			game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+			val = self.max_turn(game, board, coord, self.opponent(player), depth-1, alpha, beta)
+			# if val < beta:
+			#     beta = val
+			# if alpha >= beta:
+			#     break
+			if val < temp:
+				temp = val
+		return temp
+
+	def max_turn(self, game, board, last_move, player, depth, alpha, beta):
+		if depth <= 0 or game.board.checkBoard(game.miniBoards, self.opponent(player)) or game.board.checkBoard(game.miniBoards, player):
+		# if depth <= 0:
+			return self.evaluate(game, board, last_move, player)
+
+		succ = self.successors(board, game, last_move[0], last_move[1], player)
+		temp = -inf
+		for coord, board in succ.items():
+			game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+			val = self.min_turn(game, board, coord, self.opponent(player), depth-1, alpha, beta)
+			# if alpha < val:
+			#     alpha = val
+			# if alpha >= beta:
+			#     break
+			if val > temp:
+				temp = val
+		return temp
 
 class User(Player):
 	def __init__(self, symbol, num):

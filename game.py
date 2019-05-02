@@ -137,7 +137,7 @@ class Game():
 	def updateGame(self, row, col, player, symbol):
 		self.lrow, self.lcol = row, col
 		self.boardSpots[row][col] = player
-		if self.board.checkMinibox(row, col, player, symbol, self) is True:
+		if self.board.checkMinibox(row, col, player, self.boardSpots) is True:
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
 			self.miniBoards[mr][mc] = player
 
@@ -162,7 +162,7 @@ class Game():
 
 					self.GAME_OVER = True
 
-		elif self.board.checkBoardFull(row, col, self):
+		elif self.board.checkBoardFull(row, col, self.boardSpots):
 			mr, mc = self.board.getCurrentMiniBoard(row, col)
 			self.miniBoards[mr][mc] = -1
 			self.board.finishMiniBoard(row, col, ' + ')
