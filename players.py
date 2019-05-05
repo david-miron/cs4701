@@ -78,17 +78,17 @@ class MonteCarlo(Player):
 			leaf = self.mcTree
 			random.seed()
 			while(len(leaf.children) > 0):
-				# leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
-				ubc_lst = []
-				for idx, ch in enumerate(leaf.children):
-					if ch.gamesPlayed == 0:
-						ubc = 0
-					else:
-						ubc =(ch.wins / ch.gamesPlayed) + C*(math.sqrt(math.log(leaf.gamesPlayed)/ch.gamesPlayed))
-					ubc_lst.append(ubc)
-				max_idx = ubc_lst.index(max(ubc_lst))
-				#print(ubc_lst)
-				leaf = leaf.children[max_idx]
+				leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
+				# ubc_lst = []
+				# for idx, ch in enumerate(leaf.children):
+				# 	if ch.gamesPlayed == 0:
+				# 		ubc = 0
+				# 	else:
+				# 		ubc =(ch.wins / ch.gamesPlayed) + C*(math.sqrt(math.log(leaf.gamesPlayed)/ch.gamesPlayed))
+				# 	ubc_lst.append(ubc)
+				# max_idx = ubc_lst.index(max(ubc_lst))
+				# #print(ubc_lst)
+				# leaf = leaf.children[max_idx]
 				#print(type(leaf))
 
 				# leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
