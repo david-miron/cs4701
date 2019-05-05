@@ -256,23 +256,134 @@ class Minimax(Player):
 		else:
 			return 1
 
-	def evaluate(self, game, board, player):
+	def evaluate(self, game, board, player, lrow, lcol):
+		#print('evaluating')
+		opponent = self.opponent(player)
+		#print(game.miniBoards)
+		#print(player)
 		score = 0
+
+		if game.winner == player:
+			return 100000
+		elif game.winner == opponent:
+			return -100000
+		elif game.GAME_OVER is True:
+			return 0
+
+		def weight(x, y):
+			if x == 1 and y == 1 and game.miniBoards == player:
+				return 4
+			if x == 0 and y == 0 and game.miniBoards == player:
+				return 3
+			if x == 0 and y == 2 and game.miniBoards == player:
+				return 3
+			if x == 2 and y == 0 and game.miniBoards == player:
+				return 3
+			if x == 2 and y == 2 and game.miniBoards == player:
+				return 3
+			if x == 1 and y == 0 and game.miniBoards == player:
+				return 2
+			if x == 1 and y == 2 and game.miniBoards == player:
+				return 2
+			if x == 0 and y == 1 and game.miniBoards == player:
+				return 2
+			if x == 2 and y == 1 and game.miniBoards == player:
+				return 2
+			else:
+				return 0
+		# if game.miniBoards[1][1] == player:
+		# 	weight += 4
+		# if game.miniBoards[0][0] == player:
+		# 	weight += 3
+		# if game.miniBoards[0][2] == player:
+		# 	weight += 3
+		# if game.miniBoards[2][0] == player:
+		# 	weight += 3
+		# if game.miniBoards[2][2] == player:
+		# 	weight += 3
+		# if game.miniBoards[1][0] == player:
+		# 	weight += 2
+		# if game.miniBoards[1][2] == player:
+		# 	weight += 2
+		# if game.miniBoards[0][1] == player:
+		# 	weight += 2
+		# if game.miniBoards[2][1] == player:
+		# 	weight += 2
+		# for row in game.miniBoards:
+		# 	score = score + row.count(player)
+		# 	score = score - row.count(self.opponent(player))
+
+		#print(score)
 		for row in range(3):
 			for col in range(3):
-				x,y = game.board.getCurrentMiniBoard(row, col)
-				coords = game.board.miniCoordToGlobal(x, y)
-				temp = []
-				for x,y in coords:
-					temp.append(board[x][y])
-				miniBoard = []
-				miniBoard.append(temp[:3])
-				miniBoard.append(temp[3:6])
-				miniBoard.append(temp[6:9])
-				score += self.evaluate_small_box(miniBoard, player)
+				mini_score = 0
+				if game.miniBoards[row][col] == player:
+					mini_score += 24
+				elif game.miniBoards[row][col] == opponent:
+					mini_score -= 24
+				elif game.miniBoards[row][col] != -1:
+					x,y = game.board.getCurrentMiniBoard(row, col)
+					coords = game.board.miniCoordToGlobal(x, y)
+					temp = []
+					for x,y in coords:
+						temp.append(board[x][y])
+					miniBoard = []
+					miniBoard.append(temp[:3])
+					miniBoard.append(temp[3:6])
+					miniBoard.append(temp[6:9])
+					if miniBoard[1][1] == player:
+						mini_score += 4 
+					elif miniBoard[1][1] == opponent:
+						mini_score -= 4 
+
+					if miniBoard[0][0] == player:
+						mini_score += 3
+					elif miniBoard[0][0] == opponent:
+						mini_score -= 3 
+
+					if miniBoard[0][2] == player:
+						mini_score += 3
+					elif miniBoard[0][2] == opponent:
+						mini_score -= 3 
+
+					if miniBoard[2][0] == player:
+						mini_score += 3
+					elif miniBoard[2][0] == opponent:
+						mini_score -= 3 
+
+					if miniBoard[2][2] == player:
+						mini_score += 3
+					elif miniBoard[2][2] == opponent:
+						mini_score -= 3 
+
+					if miniBoard[1][0] == player:
+						mini_score += 2
+					elif miniBoard[1][0] == opponent:
+						mini_score -= 2 
+
+					if miniBoard[1][2] == player:
+						mini_score += 2
+					elif miniBoard[1][2] == opponent:
+						mini_score -= 2 
+
+					if miniBoard[0][1] == player:
+						mini_score += 2 
+					elif miniBoard[0][1] == opponent:
+						mini_score -= 2 
+
+					if miniBoard[2][1] == player:
+						mini_score += 2 
+					elif miniBoard[2][1] == opponent:
+						mini_score -= 2 
+
+				w = weight(row,col)
+				score += mini_score*w
+		#print(player)
+		#print(score)
+		# print(weight)
 		return score
 
-	def playTurn(self, game, lrow, lcol, depth=20):
+	def playTurn(self, game, lrow, lcol, depth=2):
 		print()
 		print("Player " + str(game.currentPlayer.playerNum) + " (MiniMax):")
 
@@ -287,9 +398,29 @@ class Minimax(Player):
 			dummyGame.nextPlayer = dummyGame.player1
 
 		player = dummyGame.currentPlayer.playerNum
+		sym = dummyGame.currentPlayer.symbol
 
-		val, move = self.miniMax(dummyGame, lrow, lcol, depth, dummyGame.currentPlayer.playerNum)
+		#val, move = self.miniMax(dummyGame, lrow, lcol, depth, player)
+		succ = self.successors(dummyGame.boardSpots, dummyGame, lrow, lcol, player)
+		#print(succ)
+		maxPlayer = player
+		val = -inf
+		move = None
+		for coord in succ:
+			#update game
+			dummyGame.updateGame(coord[0], coord[1], player, sym)
+			#update next player
+			hold = dummyGame.currentPlayer
+			dummyGame.currentPlayer = dummyGame.nextPlayer
+			dummyGame.nextPlayer = hold
+			#maximize
+			temp, _ = self.miniMax(dummyGame, coord[0], coord[1], depth-1, False)
+			#print("maximizing" + str(temp) + "val is" + str(val) + "move is" + str(coord))
+			if temp > val:
+				val = temp
+				move = coord
 		return move[0], move[1]
+
 		# succ = self.successors(dummyGame.boardSpots, dummyGame, lrow, lcol, player)
 
 		# best_move = (-inf, None)
@@ -310,29 +441,44 @@ class Minimax(Player):
 		# return best_move[1][0], best_move[1][1]
 
 	def miniMax(self, game, lrow, lcol, depth, maxPlayer):
+		dummyGame = copy.deepcopy(game)
+		# dummyGame.player1 = Dummy(' X ', 1)
+		# dummyGame.player2 = Dummy(' O ', 2)
+		# if game.currentPlayer.playerNum == 1:
+		# 	dummyGame.currentPlayer = dummyGame.player1
+		# 	dummyGame.nextPlayer = dummyGame.player2
+		# else:
+		# 	dummyGame.currentPlayer = dummyGame.player2
+		# 	dummyGame.nextPlayer = dummyGame.player1
+
+		player = dummyGame.currentPlayer.playerNum
+		sym = dummyGame.currentPlayer.symbol
 		#print('top minimax')
 		#print(self.evaluate(game, game.boardSpots, game.nextPlayer.playerNum))
+		#print(game.currentPlayer.playerNum)
 		
-		player = game.currentPlayer.playerNum
-		succ = self.successors(game.boardSpots, game, lrow, lcol, player)
+		succ = self.successors(dummyGame.boardSpots, dummyGame, lrow, lcol, player)
+		#print(succ)
 		#stopping conditions, evaluate the state
-		if depth <= 0 or len(succ) == 0 or game.board.checkBoard(game.miniBoards, self.opponent(player)) or game.board.checkBoard(game.miniBoards, player):
-			return self.evaluate(game, game.boardSpots, game.nextPlayer.playerNum)
-		
-		depth -1
+		if depth <= 0 or dummyGame.GAME_OVER is True:
+			val = self.evaluate(dummyGame, dummyGame.boardSpots, player, lrow, lcol)
+			return val, (lrow,lcol)
 
-		if maxPlayer == game.currentPlayer.playerNum:
+		if maxPlayer:
 			val = -inf
 			move = None
 			for coord in succ:
 				#update game
-				game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+				dummyGame.updateGame(coord[0], coord[1], player, sym)
 				#update next player
-				hold = game.currentPlayer
-				game.currentPlayer = game.nextPlayer
-				game.nextPlayer = hold
+				hold = dummyGame.currentPlayer
+				dummyGame.currentPlayer = dummyGame.nextPlayer
+				dummyGame.nextPlayer = hold
 				#maximize
-				temp, move = self.miniMax(game, coord[0], coord[1], depth, maxPlayer)
+				temp, _ = self.miniMax(dummyGame, coord[0], coord[1], depth-1, False)
+				
+				#print("maximizing" + str(temp) + "val is" + str(val) + "move is" + str(coord))
+
 				if temp > val:
 					val = temp
 					move = coord
@@ -342,33 +488,39 @@ class Minimax(Player):
 			move = None
 			for coord in succ:
 				#update game
-				game.updateGame(coord[0], coord[1], player, game.currentPlayer.symbol)
+				dummyGame.updateGame(coord[0], coord[1], player, sym)
 				#update next player
-				hold = game.currentPlayer
-				game.currentPlayer = game.nextPlayer
-				game.nextPlayer = hold
+				hold = dummyGame.currentPlayer
+				dummyGame.currentPlayer = dummyGame.nextPlayer
+				dummyGame.nextPlayer = hold
 				#minimize
-				temp, move = self.miniMax(game, coord[0], coord[1], depth, maxPlayer)
+				temp, _ = self.miniMax(dummyGame, coord[0], coord[1], depth-1, True)
+				#print(val)
+				#print(temp)
+				
 				if temp < val:
 					val = temp
 					move = coord
 			return val, move
 
 	def successors(self, board, game, lrow, lcol, player):
+		dummyGame = copy.deepcopy(game)
 		succ = []
-		mr, mc = game.board.getNextMiniBoard(lrow, lcol, game)
-		if mr == -1 or game.board.checkBoardFull(mr, mc, board) is True:
+		mr, mc = dummyGame.board.getNextMiniBoard(lrow, lcol, dummyGame)
+		if mr == -1 or dummyGame.board.checkBoardFull(mr, mc, board) is True:
 			for x, row in enumerate(board):
 				for y, val in enumerate(row):
-					temp = copy.deepcopy(game.boardSpots)
-					if val == 0:
-						temp[x][y] = player
-						succ.append((x,y))
-						# succ[(x,y)] = temp
+					mr, mc = dummyGame.board.getCurrentMiniBoard(x, y)
+					if dummyGame.miniBoards[mr][mc] == 0:
+						temp = copy.deepcopy(dummyGame.boardSpots)
+						if val == 0:
+							temp[x][y] = player
+							succ.append((x,y))
+							# succ[(x,y)] = temp
 		else:
-			coords = game.board.miniCoordToGlobal(mr, mc)
+			coords = dummyGame.board.miniCoordToGlobal(mr, mc)
 			for (x,y) in coords:
-				temp = copy.deepcopy(game.boardSpots)
+				temp = copy.deepcopy(dummyGame.boardSpots)
 				if temp[x][y] == 0:
 					temp[x][y] = player
 					succ.append((x,y))
@@ -589,4 +741,3 @@ class Random(Player):
 				valid = True
 		
 		return row, col
-

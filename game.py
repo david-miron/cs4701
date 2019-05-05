@@ -6,6 +6,7 @@ class Game():
 		self.board = Board()
 		self.player1 = None
 		self.player2 = None
+		self.winner = 0
 		self.lrow = -1
 		self.lcol = -1
 		self.GAME_OVER = False
@@ -143,6 +144,7 @@ class Game():
 
 			if self.board.checkBoard(self.miniBoards, self.currentPlayer.playerNum) is True:
 				self.board.finishBoard(symbol)
+				self.board.winner = player
 				
 				if(not isinstance(self.currentPlayer, Dummy)):
 					self.board.printBoard()
