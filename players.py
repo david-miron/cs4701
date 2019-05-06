@@ -42,18 +42,23 @@ class Dummy(Player):
 		return row, col
 
 class MonteCarlo(Player):
-	def __init__(self, symbol, num):
+	#opt 0 -> all random, opt 1 -> selection with ucb
+	def __init__(self, symbol, num, opt=0):
 		super(MonteCarlo, self).__init__(symbol, num)
 		testGame = game.Game(0,0)
 		self.mcTree = self.MCTree(0, 0, [], None, testGame)
 		self.totalGames = 0
+		self.option = opt
 
 
 	def playTurn(self, game, lrow, lcol):
 		#tunable parameter
 		C = math.sqrt(2)
 		print()
-		print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo):")
+		if(self.option == 0):
+			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo):")
+		elif(self.option == 1):
+			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo (w/ UCB)):")
 		#set root node to current game state
 		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):
@@ -79,37 +84,17 @@ class MonteCarlo(Player):
 			leaf = self.mcTree
 			random.seed()
 			while(len(leaf.children) > 0):
-				#leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
-				ucb_lst = []
-				for idx, ch in enumerate(leaf.children):
-					# if ch.gamesPlayed == 0:
-					# 	ucb = C
-					# else:
-					ucb =((ch.wins+1) / (ch.gamesPlayed+1)) + C*(math.sqrt(math.log(self.totalGames +1)/(ch.gamesPlayed +1)))
-					ucb_lst.append(ucb)
+				if(self.option == 0):
+					leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
+				elif(self.option == 1):
+					ucb_lst = []
+					for idx, ch in enumerate(leaf.children):
+						ucb =((ch.wins+1) / (ch.gamesPlayed+1)) + C*(math.sqrt(math.log(self.totalGames +1)/(ch.gamesPlayed +1)))
+						ucb_lst.append(ucb)
 
-				#if sum(ucb_lst) == 0:
-				# 	leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
-				# else:
+					max_idx = ucb_lst.index(max(ucb_lst))
+					leaf = leaf.children[max_idx]
 
-				max_idx = ucb_lst.index(max(ucb_lst))
-				#print(ucb_lst)
-				leaf = leaf.children[max_idx]
-				#print(type(leaf))
-
-				# leaf = leaf.children[random.randint(0, len(leaf.children) - 1)]
-				# maxVal = 0
-				# maxOpt= None
-				# for c in leaf.children:
-				# 	if(c.gamesPlayed != 0):
-				# 		val = (c.wins / c.gamesPlayed) + C * math.sqrt(math.log(leaf.gamesPlayed) / c.gamesPlayed)
-				# 	else:
-				# 		val = 0
-				# 	if val >= maxVal:
-				# 		maxVal = val
-				# 		maxOpt = c
-				# leaf = maxOpt
-			
 			#expansion step
 			playoutNode = None
 			result = self.terminal(leaf.game)

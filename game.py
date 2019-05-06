@@ -14,22 +14,26 @@ class Game():
 		if(player1 == 1):
 			self.player1 = User(" X ", 1)
 		elif(player1 == 2):
-			self.player1 = MonteCarlo(" X ", 1)
+			self.player1 = MonteCarlo(" X ", 1, 0)
 		elif(player1 == 3):
 			self.player1 = Minimax(" X ", 1)
 		elif(player1 == 4):
 			self.player1 = Random(" X ", 1)
+		elif(player1 == 5):
+			self.player1 = MonteCarlo(" X ", 1, 1)
 		elif(player1 == 0):
 			self.player1 = Dummy(' X ', 1)
 
 		if(player2 == 1):
 			self.player2 = User(" O ", 2)
 		elif(player2 == 2):
-			self.player2 = MonteCarlo(" O ", 2)
+			self.player2 = MonteCarlo(" O ", 2, 0)
 		elif(player2 == 3):
 			self.player2 = Minimax(" O ", 2)
 		elif(player2 == 4):
 			self.player2 = Random(" O ", 2)
+		elif(player2 == 5):
+			self.player2 = MonteCarlo(" O ", 2, 1)
 		elif(player2 == 0):
 			self.player2 = Dummy(' O ', 2)
 
@@ -74,6 +78,8 @@ class Game():
 					self.player1 = Minimax(" X ", 1)
 				elif(player1 == 4):
 					self.player1 = Random(" X ", 1)
+				elif(player1 == 5):
+					self.player1 = MonteCarlo(" X ", 1, 1)
 				elif(player1 == 0):
 					self.player1 = Dummy(' X ', 1)
 
@@ -85,6 +91,8 @@ class Game():
 					self.player2 = Minimax(" O ", 2)
 				elif(player2 == 4):
 					self.player2 = Random(" O ", 2)
+				elif(player2 == 5):
+					self.player2 = MonteCarlo(" O ", 2, 1)
 				elif(player2 == 0):
 					self.player2 = Dummy(' O ', 2)
 
