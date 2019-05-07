@@ -5,7 +5,7 @@ def main():
 	startGame()
 
 def startGame():
-	numOfPlayers = 4
+	numOfPlayers = 5
 	player1 = -1
 	player2 = -1
 	repeat = -1
@@ -16,6 +16,7 @@ def startGame():
 		print("2 - Monte Carlo AI")
 		print("3 - Minimax AI")
 		print("4 - Random AI")
+		print("5 - UCB")
 		try:
 			player1 = int(input("Enter Choice: "))
 			if(player1 < 1 or player1 > numOfPlayers):
@@ -33,6 +34,7 @@ def startGame():
 		print("2 - Monte Carlo AI")
 		print("3 - Minimax AI")
 		print("4 - Random AI")
+		print("5 - UCB")
 		try:
 			player2 = int(input("Enter Choice: "))
 			if(player2 < 1 or player2 > numOfPlayers):
@@ -46,7 +48,7 @@ def startGame():
 
 	while(repeat <= 0):
 		try:
-			repeat = int(input("How many times should it repeeat?: "))
+			repeat = int(input("How many games should be played?: "))
 			if(repeat <= 0):
 				print("Not a valid option")
 				print()
