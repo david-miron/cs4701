@@ -58,7 +58,7 @@ class MonteCarlo(Player):
 		if(self.option == 0):
 			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo):")
 		elif(self.option == 1):
-			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo (w/ UCB)):")
+			print("Player " + str(game.currentPlayer.playerNum) + " (UCB):")
 		#set root node to current game state
 		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):

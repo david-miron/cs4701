@@ -16,7 +16,7 @@ def startGame():
 		print("2 - Monte Carlo AI")
 		print("3 - Minimax AI")
 		print("4 - Random AI")
-		print("5 - Monte Carlo AI (w/ UCB)")
+		print("5 - UCB")
 		try:
 			player1 = int(input("Enter Choice: "))
 			if(player1 < 1 or player1 > numOfPlayers):
@@ -34,7 +34,7 @@ def startGame():
 		print("2 - Monte Carlo AI")
 		print("3 - Minimax AI")
 		print("4 - Random AI")
-		print("5 - Monte Carlo AI (w/ UCB)")
+		print("5 - UCB")
 		try:
 			player2 = int(input("Enter Choice: "))
 			if(player2 < 1 or player2 > numOfPlayers):
