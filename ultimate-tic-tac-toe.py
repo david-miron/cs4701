@@ -13,10 +13,10 @@ def startGame():
 	while(player1 < 1 or player1 > numOfPlayers):
 		print("Select Player 1 (X):")
 		print("1 - User")
-		print("2 - Monte Carlo AI")
-		print("3 - Minimax AI")
+		print("2 - Monte Carlo Tree Search AI")
+		print("3 - MiniMax AI")
 		print("4 - Random AI")
-		print("5 - UCB")
+		print("5 - UCT AI")
 		try:
 			player1 = int(input("Enter Choice: "))
 			if(player1 < 1 or player1 > numOfPlayers):
@@ -31,10 +31,10 @@ def startGame():
 	while(player2 < 1 or player2 > numOfPlayers):
 		print("Select Player 2 (O):")
 		print("1 - User")
-		print("2 - Monte Carlo AI")
-		print("3 - Minimax AI")
+		print("2 - Monte Carlo Tree Search AI")
+		print("3 - MiniMax AI")
 		print("4 - Random AI")
-		print("5 - UCB")
+		print("5 - UCT AI")
 		try:
 			player2 = int(input("Enter Choice: "))
 			if(player2 < 1 or player2 > numOfPlayers):

@@ -56,9 +56,9 @@ class MonteCarlo(Player):
 		C = math.sqrt(2)
 		print()
 		if(self.option == 0):
-			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo):")
+			print("Player " + str(game.currentPlayer.playerNum) + " (Monte Carlo Tree Search):")
 		elif(self.option == 1):
-			print("Player " + str(game.currentPlayer.playerNum) + " (UCB):")
+			print("Player " + str(game.currentPlayer.playerNum) + " (UCT):")
 		#set root node to current game state
 		nextChild = self.findChild(game.boardSpots)
 		if(nextChild == None):
@@ -586,11 +586,14 @@ class User(Player):
 				print()
 			elif(miniBoardRow == 1 and miniBoardCol == 0):
 				print("Player " + str(game.currentPlayer.playerNum) + " can play on the middle left mini board")
-				row = int(input("Enter row: "))
-				col = int(input("Enter col: "))
-				if(row >= 3 and row <= 5 and col >= 0 and col <= 2):
-					valid = True
-				else:
+				try:
+					row = int(input("Enter row: "))
+					col = int(input("Enter col: "))
+					if(row >= 3 and row <= 5 and col >= 0 and col <= 2):
+						valid = True
+					else:
+						print("This is not a valid move")
+				except:
 					print("This is not a valid move")
 
 				print()
@@ -667,7 +670,7 @@ class User(Player):
 
 				mrow, mcol = game.board.getCurrentMiniBoard(row, col)
 				if(game.miniBoards[mrow][mcol] != 0):
-					print("This mini board is out of cOmIsSiOn ya big ol' dummy")
+					print("This mini board is finished")
 					valid = False
 
 		return row,col
@@ -697,3 +700,5 @@ class Random(Player):
 				valid = True
 		
 		return row, col
+
+
